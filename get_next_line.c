@@ -6,11 +6,17 @@
 /*   By: sunko <sunko@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 16:26:11 by sunko             #+#    #+#             */
-/*   Updated: 2023/03/27 15:39:44 by sunko            ###   ########.fr       */
+/*   Updated: 2023/03/27 20:38:39 by sunko            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+int	ft_free(char *str)
+{
+	free(str);
+	return (0);
+}
 
 int	make_node(t_list *list, int fd)
 {
@@ -35,7 +41,7 @@ int	make_node(t_list *list, int fd)
 	list->cur->fd = fd;
 	list->cur->save = (char *)malloc(sizeof(char) * 1);
 	if (!list->cur->save)
-		return (0);
+		return ((int)remove_node(list, NULL));
 	list->cur->save[0] = 0;
 	return (1);
 }
@@ -61,7 +67,7 @@ char	*read_line(t_list *list, char *rst)
 			break ;
 	}
 	if (ft_strchr(rst, '\n'))
-		return (extract_line(list, rst));
+		return (extract_line(list, rst, (int)(ft_strchr(rst, '\n') - rst)));
 	else
 	{
 		free(list->cur->save);
@@ -69,30 +75,32 @@ char	*read_line(t_list *list, char *rst)
 	}
 }
 
-char	*extract_line(t_list *list, char *rst)
+char	*extract_line(t_list *list, char *rst, int pos)
 {
-	int		pos;
-	size_t	i;
-	size_t	len;
 	int		j;
 	char	*tmp;
+	char	*tmp_rst;
 
-	i = 0;
-	len = ft_strlen(rst);
 	j = -1;
-	pos = (int)(ft_strchr(rst, '\n') - rst);
-	tmp = (char *)malloc(sizeof(char) * (len - pos));
+	tmp = (char *)malloc(sizeof(char) * (ft_strlen(rst) - pos));
 	if (!tmp)
 		return (remove_node(list, rst));
-	while (++pos < (int)len)
+	tmp_rst = (char *)malloc(sizeof(char) * (pos + 2));
+	if (!tmp_rst)
+		return (remove_node(list, rst) + ft_free(tmp));
+	while (++pos < (int)ft_strlen(rst))
 		tmp[++j] = rst[pos];
 	tmp[++j] = 0;
 	list->cur->save = tmp;
 	pos = (int)(ft_strchr(rst, '\n') - rst);
-	rst[++pos] = 0;
-	if (!(*rst))
+	j = -1;
+	while (++j <= (pos))
+		tmp_rst[j] = rst[j];
+	tmp_rst[j] = 0;
+	free(rst);
+	if (!(*tmp_rst))
 		free(list->cur->save);
-	return (rst);
+	return (tmp_rst);
 }
 
 char	*get_next_line(int fd)

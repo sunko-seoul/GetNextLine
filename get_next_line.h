@@ -6,7 +6,7 @@
 /*   By: sunko <sunko@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 16:26:16 by sunko             #+#    #+#             */
-/*   Updated: 2023/03/27 14:00:48 by sunko            ###   ########.fr       */
+/*   Updated: 2023/03/27 20:39:00 by sunko            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
+#  define BUFFER_SIZE 10
 # endif
 
 # include <stdlib.h>
@@ -36,11 +36,12 @@ typedef struct s_list
 }	t_list;
 
 size_t	ft_strlen(char *s);
+int		ft_free(char *str);
 char	*ft_strchr(const char *str, int c);
 char	*ft_strjoin(t_list *list, char *tmp, char *buffer);
 char	*get_next_line(int fd);
 void	keep_save(t_list *list, char *rst);
-char	*extract_line(t_list *list, char *str);
+char	*extract_line(t_list *list, char *str, int pos);
 char	*include_enter(t_list *list);
 int		make_node(t_list *list, int fd);
 char	*remove_node(t_list *list, char *str);

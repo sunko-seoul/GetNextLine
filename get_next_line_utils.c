@@ -6,7 +6,7 @@
 /*   By: sunko <sunko@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 16:26:13 by sunko             #+#    #+#             */
-/*   Updated: 2023/03/27 15:28:47 by sunko            ###   ########.fr       */
+/*   Updated: 2023/03/27 19:57:32 by sunko            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,12 @@ char	*ft_strjoin(t_list *list, char *rst, char *buffer)
 	len = ft_strlen(rst) + ft_strlen(buffer);
 	ptr = (char *)malloc(sizeof(char) * (len + 1));
 	if (!ptr)
-	{
-		free(buffer);
-		return (remove_node(list, rst));
-	}
-	ptr[len] = 0;
+		return (remove_node(list, list->cur->save) + ft_free(rst));
 	while (rst[++i] != '\0')
 		ptr[i] = rst[i];
 	while (buffer[++j] != '\0')
 		ptr[i++] = buffer[j];
+	ptr[i] = 0;
 	free(rst);
 	return (ptr);
 }
@@ -74,10 +71,7 @@ int	check_fd(t_list *list, int fd)
 		i++;
 	}
 	if (!make_node(list, fd))
-	{
-		free(list->cur);
 		return (0);
-	}
 	return (1);
 }
 
@@ -89,8 +83,9 @@ char	*remove_node(t_list *list, char *str)
 	list->before->next = list->cur->next;
 	if (list->tail == list->cur)
 		list->tail = list->before;
+	if (str)
+		free(str);
 	free(dnode);
-	free(str);
 	(list->num_of_node)--;
 	if (list->num_of_node == 0)
 		list->tail = NULL;
