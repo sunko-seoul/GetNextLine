@@ -6,7 +6,7 @@
 /*   By: sunko <sunko@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 16:26:13 by sunko             #+#    #+#             */
-/*   Updated: 2023/03/25 21:27:48 by sunko            ###   ########.fr       */
+/*   Updated: 2023/03/27 15:28:47 by sunko            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,25 @@
 
 char	*ft_strjoin(t_list *list, char *rst, char *buffer)
 {
-	size_t	total_len;
 	int		i;
 	int		j;
 	char	*ptr;
+	size_t	len;
 
-	total_len = ft_strlen(rst) + ft_strlen(buffer);
 	i = -1;
 	j = -1;
-	ptr = (char *)malloc(sizeof(char) * (total_len + 1));
+	len = ft_strlen(rst) + ft_strlen(buffer);
+	ptr = (char *)malloc(sizeof(char) * (len + 1));
 	if (!ptr)
+	{
+		free(buffer);
 		return (remove_node(list, rst));
+	}
+	ptr[len] = 0;
 	while (rst[++i] != '\0')
 		ptr[i] = rst[i];
 	while (buffer[++j] != '\0')
-	{
-		ptr[i] = buffer[j];
-		i++;
-	}
-	ptr[i] = '\0';
+		ptr[i++] = buffer[j];
 	free(rst);
 	return (ptr);
 }
@@ -55,7 +55,7 @@ size_t	ft_strlen(char *s)
 	size_t	i;
 
 	i = 0;
-	while (s[i])
+	while (s[i] != '\0')
 		i++;
 	return (i);
 }
@@ -74,7 +74,10 @@ int	check_fd(t_list *list, int fd)
 		i++;
 	}
 	if (!make_node(list, fd))
+	{
+		free(list->cur);
 		return (0);
+	}
 	return (1);
 }
 

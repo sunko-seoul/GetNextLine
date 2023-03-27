@@ -6,7 +6,7 @@
 /*   By: sunko <sunko@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 23:21:16 by sunko             #+#    #+#             */
-/*   Updated: 2023/03/25 23:21:34 by sunko            ###   ########.fr       */
+/*   Updated: 2023/03/27 15:16:20 by sunko            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 typedef struct s_node
 {
 	int				fd;
-	char			save[100000000];
+	char			*save;
 	struct s_node	*next;
 }	t_list_node;
 

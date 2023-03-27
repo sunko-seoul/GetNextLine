@@ -6,7 +6,7 @@
 /*   By: sunko <sunko@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 16:26:11 by sunko             #+#    #+#             */
-/*   Updated: 2023/03/25 23:22:53 by sunko            ###   ########.fr       */
+/*   Updated: 2023/03/27 15:39:44 by sunko            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ int	make_node(t_list *list, int fd)
 	list->before = list->tail;
 	(list->num_of_node)++;
 	list->cur->fd = fd;
+	list->cur->save = (char *)malloc(sizeof(char) * 1);
+	if (!list->cur->save)
+		return (0);
 	list->cur->save[0] = 0;
 	return (1);
 }
@@ -60,7 +63,10 @@ char	*read_line(t_list *list, char *rst)
 	if (ft_strchr(rst, '\n'))
 		return (extract_line(list, rst));
 	else
+	{
+		free(list->cur->save);
 		return (rst);
+	}
 }
 
 char	*extract_line(t_list *list, char *rst)
@@ -69,18 +75,23 @@ char	*extract_line(t_list *list, char *rst)
 	size_t	i;
 	size_t	len;
 	int		j;
+	char	*tmp;
 
 	i = 0;
 	len = ft_strlen(rst);
 	j = -1;
 	pos = (int)(ft_strchr(rst, '\n') - rst);
+	tmp = (char *)malloc(sizeof(char) * (len - pos));
+	if (!tmp)
+		return (remove_node(list, rst));
 	while (++pos < (int)len)
-		list->cur->save[++j] = rst[pos];
-	while (j < (int)len)
-		list->cur->save[++j] = 0;
+		tmp[++j] = rst[pos];
+	tmp[++j] = 0;
+	list->cur->save = tmp;
 	pos = (int)(ft_strchr(rst, '\n') - rst);
-	while (++pos < (int)len)
-		rst[pos] = 0;
+	rst[++pos] = 0;
+	if (!(*rst))
+		free(list->cur->save);
 	return (rst);
 }
 
@@ -88,21 +99,22 @@ char	*get_next_line(int fd)
 {
 	static t_list	list;
 	char			*rst;
-	int				i;
 
 	rst = NULL;
-	i = -1;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!check_fd(&list, fd))
 		return (NULL);
 	rst = (char *)malloc(sizeof(char) * 1);
+	if (!rst)
+		return (remove_node(&list, list.cur->save));
 	rst[0] = 0;
-	rst = ft_strjoin(&list, rst, list.cur->save);
-	while (++i <= BUFFER_SIZE)
-		list.cur->save[i] = 0;
+	if (list.cur->save != 0)
+		rst = ft_strjoin(&list, rst, list.cur->save);
 	if (!rst)
 		return (NULL);
+	free(list.cur->save);
+	list.cur->save = 0;
 	rst = read_line(&list, rst);
 	if (!rst)
 		return (NULL);
