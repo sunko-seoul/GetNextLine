@@ -6,7 +6,7 @@
 /*   By: sunko <sunko@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 16:26:11 by sunko             #+#    #+#             */
-/*   Updated: 2023/03/28 16:08:27 by sunko            ###   ########.fr       */
+/*   Updated: 2023/03/28 16:38:27 by sunko            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,8 @@ char	*extract_line(t_list *list, char *rst, int pos)
 		return (ft_free(list, rst, list->cur->save));
 	while (++pos < (int)len)
 		list->cur->save[++j] = rst[pos];
-	pos = (int)(enter - rst);
 	j = -1;
-	while (++j <= (pos))
+	while (++j <= (int)(enter - rst))
 		tmp_rst[j] = rst[j];
 	rst = ft_free(NULL, NULL, rst);
 	if (!(*tmp_rst))
